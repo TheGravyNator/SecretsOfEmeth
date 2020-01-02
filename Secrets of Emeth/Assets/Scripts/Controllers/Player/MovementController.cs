@@ -10,7 +10,7 @@ public class MovementController : MonoBehaviour
     public float speed;
     // Grid position of the player. Not the same as the realtime position acquired by transform.position.
     private Vector3 pos;
-    // Length of the collision raycasts around the palyer. Suggested size for raycastlength is 1.9, making sure the player cannot run into a grid space another entity is also moving towards.
+    // Length of the collision raycasts around the player. Suggested size for raycastlength is 1.9, making sure the player cannot run into a grid space another entity is also moving towards.
     public float raycastlength;
 
     void Start()
@@ -18,7 +18,6 @@ public class MovementController : MonoBehaviour
         // Set the current grid position to the starting position of the player.
         pos = transform.position;
         tr = transform;
-        
     }
     
     void Update()
