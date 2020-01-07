@@ -6,10 +6,13 @@ public class InteractionController : MonoBehaviour
 {
     public float raycastlength;
     private MovementController player;
+    public GameObject textboxObject;
+    private TextboxController textbox;
 
     void Start()
     {
         player = gameObject.GetComponent<MovementController>();
+        textbox = textboxObject.GetComponent<TextboxController>();
     }
 
     void Update()
@@ -18,9 +21,9 @@ public class InteractionController : MonoBehaviour
         Debug.DrawLine(player.pos, player.pos + player.dir, Color.green);
         if (hit.collider != null)
         {
-            if (hit.collider.tag == "enemy" && Input.GetButtonDown("Jump"))
+            if (hit.collider.tag == "enemy" && Input.GetButtonDown("Jump") && !textbox.inTextbox)
             {
-                Debug.Log("This is an enemy.");
+                textbox.WriteText("My name is Yoshikage Kira. I'm 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don't smoke, but I occasionally drink.");
             }
         }
     }
