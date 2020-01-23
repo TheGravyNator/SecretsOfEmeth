@@ -6,11 +6,10 @@ using UnityEngine.UI;
 public class TextboxController : MonoBehaviour
 {
     public Text textField;
-    public bool inTextbox;
 
     public void WriteText(string text)
     {
-        inTextbox = true;
+        GameManager.Instance.ChangeGameState(Gamestates.INTERACTING);
         textField.text = "";
         gameObject.SetActive(true);
         StartCoroutine(WriteTextbox(text));
@@ -25,7 +24,7 @@ public class TextboxController : MonoBehaviour
             else yield return new WaitForSeconds(.05f);
         }
         yield return WaitForKeyPress();
-        inTextbox = false;
+        GameManager.Instance.ChangeGameState(GameManager.Instance.previousGameState);
         gameObject.SetActive(false);
     }
 

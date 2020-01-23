@@ -2,8 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager
 {
+    private static GameManager instance;
+
+    private GameManager() { }
+
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new GameManager();
+            }
+            return instance;
+        }
+    }
+
+    public Gamestates previousGameState;
     public Gamestates GameState;
 
     public delegate void GameStateChanged(Gamestates currentGameState, Gamestates newGameState);
@@ -13,18 +30,13 @@ public class GameManager : MonoBehaviour
     {
         ChangeGameState(Gamestates.MAIN_MENU);
     }
-    
-    void Update()
-    {
-        
-        
-    }
 
     public void ChangeGameState(Gamestates newGameState)
     {
-        Gamestates previousGameState = GameState;
+        previousGameState = GameState;
+        Gamestates currentGameState = GameState;
         GameState = newGameState;
-        OnGameStateChanged(previousGameState, GameState);
+        OnGameStateChanged(currentGameState, GameState);
     }
 }
 
