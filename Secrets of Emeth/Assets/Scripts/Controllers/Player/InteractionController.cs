@@ -9,22 +9,36 @@ public class InteractionController : MonoBehaviour
     public GameObject textboxObject;
     private TextboxController textbox;
 
-    void Start()
+    private bool isInteracting;
+
+    private void Start()
     {
         player = gameObject.GetComponent<MovementController>();
         textbox = textboxObject.GetComponent<TextboxController>();
+
+        GameManager.OnGameStateChanged += GameStateChanged;
     }
 
-    void Update()
+    private void Update()
     {
         RaycastHit2D hit = Physics2D.Raycast(player.pos, player.dir, raycastlength);
         Debug.DrawLine(player.pos, player.pos + player.dir, Color.green);
         if (hit.collider != null)
         {
-            if (hit.collider.tag == "enemy" && Input.GetButtonDown("Jump") && !textbox.inTextbox)
+            if (hit.collider.tag == "enemy" && Input.GetButtonDown("Jump") && !isInteracting)
             {
                 textbox.WriteText("My name is Yoshikage Kira. I'm 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don't smoke, but I occasionally drink.");
             }
         }
+    }
+
+    private void GameStateChanged(Gamestates currentGameState, Gamestates newGameState)
+    {
+        if (newGameState == Gamestates.INTERACTING)
+        {
+            Debug.Log("Gamestate changed!");
+            isInteracting = true;
+        }
+        if (currentGameState == Gamestates.INTERACTING) isInteracting = false;
     }
 }
