@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     public int health;
     public int attack;
     public int defense;
+    public int speed;
 
     public EnemyStats _statTemplate;
 
@@ -22,6 +23,7 @@ public class EnemyController : MonoBehaviour
         health = _statTemplate.health;
         attack = _statTemplate.attack;
         defense = _statTemplate.defense;
+        speed = _statTemplate.speed;
     }
 
     public int Attack(int enemyDefense)

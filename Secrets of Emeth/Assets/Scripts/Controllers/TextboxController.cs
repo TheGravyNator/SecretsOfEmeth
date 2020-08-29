@@ -39,6 +39,5 @@ public class TextboxController : MonoBehaviour
             }
             yield return null;
         }
-       
     }
 }

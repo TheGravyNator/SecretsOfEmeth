@@ -10,7 +10,7 @@ public class CharacterController : MonoBehaviour
     public int health;
     public int attack;
     public int defense;
-    public bool isPlayer;
+    public int speed;
 
     private void Start()
     {

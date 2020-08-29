@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class BattleController : MonoBehaviour
 {
@@ -41,7 +42,7 @@ public class BattleController : MonoBehaviour
         enemyStats = new EnemyController();
 
         room = GameManager.Instance.currentRoom;
-        
+
         EnemyStats test = room.spawnPool[(int)UnityEngine.Random.Range(0, room.spawnPool.Length)].statFormat;
         enemyStats.InitializeEnemy(test);
 
@@ -50,25 +51,17 @@ public class BattleController : MonoBehaviour
 
         UpdateHealthbar();
 
-        turn = TurnOrder.PLAYER;
-
-        textbox.WriteText(playerStats.characterName + " encounted a " + enemyStats.enemyName + "!");
-
-        Debug.Log(GameManager.Instance.GameState);
+        StartCoroutine(Opening());
     }
 
     void Update()
     {
-        if (playerHealth <= 0)
-        {
-            textbox.WriteText($"{enemyStats.enemyName} defeated {playerStats.characterName}.");
-            SceneManager.LoadScene("Overworld");
-        }
-        if (enemyHealth <= 0)
-        {
-            textbox.WriteText($"{playerStats.characterName} defeated {enemyStats.enemyName}.");
-            SceneManager.LoadScene("Overworld");
-        }
+    }
+
+    IEnumerator Opening()
+    {
+        textbox.WriteText(playerStats.characterName + " encounted a " + enemyStats.enemyName + "!", false);
+        yield return new WaitUntil(() => textbox.typing == false);
     }
 
     void PlayerAction(int action)
@@ -78,39 +71,68 @@ public class BattleController : MonoBehaviour
 
     IEnumerator BattleStep(int action)
     {
-        if (turn == TurnOrder.PLAYER)
+        int playerRoll = Random.Range(0, 20) + playerStats.speed;
+        int enemyRoll = Random.Range(0, 20) + enemyStats.speed;
+        int damage;
+        if ((CharacterAction)action == CharacterAction.ATTACK)
         {
-            int damage;
-            if ((CharacterAction)action == CharacterAction.ATTACK)
+            if (playerRoll > enemyRoll || playerRoll == enemyRoll)
             {
                 damage = playerStats.Attack(enemyStats.defense);
                 enemyHealth -= damage;
-                textbox.WriteText($"{playerStats.characterName} did {damage} damage.");
+                textbox.WriteText($"{playerStats.characterName} did {damage} damage.", false); ;
+                DisableButtons();
+                yield return new WaitUntil(() => textbox.typing == false);
+                UpdateHealthbar();
+                damage = enemyStats.Attack(playerStats.defense);
+                playerHealth -= damage;
+                textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.", false);
                 DisableButtons();
                 yield return new WaitUntil(() => textbox.typing == false);
                 UpdateHealthbar();
             }
-            else if ((CharacterAction)action == CharacterAction.ITEM)
+            if (playerRoll < enemyRoll)
             {
-                textbox.WriteText("You don't have any items!");
+                damage = enemyStats.Attack(playerStats.defense);
+                playerHealth -= damage;
+                textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.", false);
+                DisableButtons();
+                yield return new WaitUntil(() => textbox.typing == false);
+                UpdateHealthbar();
+                damage = playerStats.Attack(enemyStats.defense);
+                enemyHealth -= damage;
+                textbox.WriteText($"{playerStats.characterName} did {damage} damage.", false);
+                DisableButtons();
+                yield return new WaitUntil(() => textbox.typing == false);
+                UpdateHealthbar();
             }
-            else if ((CharacterAction)action == CharacterAction.RUN)
+            if (playerHealth <= 0)
             {
-                textbox.WriteText($"You ran away.");
+                textbox.WriteText($"{enemyStats.enemyName} defeated {playerStats.characterName}.", true);
+                yield return new WaitUntil(() => textbox.typing == false);
                 SceneManager.LoadScene("Overworld");
             }
-            turn = TurnOrder.ENEMY;
-            DisableButtons();
-
-            damage = enemyStats.Attack(playerStats.defense);
-            playerHealth -= damage;
-            textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.");
+            if (enemyHealth <= 0)
+            {
+                textbox.WriteText($"{playerStats.characterName} defeated {enemyStats.enemyName}.", true);
+                yield return new WaitUntil(() => textbox.typing == false);
+                SceneManager.LoadScene("Overworld");
+            }
+        }
+        else if ((CharacterAction)action == CharacterAction.ITEM)
+        {
+            textbox.WriteText("You don't have any items!", false);
             DisableButtons();
             yield return new WaitUntil(() => textbox.typing == false);
-            UpdateHealthbar();
-            turn = TurnOrder.PLAYER;
-            EnableButtons();
         }
+        else if ((CharacterAction)action == CharacterAction.RUN)
+        {
+            textbox.WriteText($"You ran away.", true);
+            DisableButtons();
+            yield return new WaitUntil(() => textbox.typing == false);
+            SceneManager.LoadScene("Overworld");
+        }
+        EnableButtons();
     }
 
     void UpdateHealthbar()

@@ -204,11 +204,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7777234613835772208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7656d28d08d7764382eea169b5ffd94, type: 3}
+  m_Script: {fileID: 11500000, guid: eecaca2bb53f2414bb6675e34681ba7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   characterName: Chris
   health: 20
   attack: 3
-  defense: 2
-  isPlayer: 1
+  defense: 3
+  isPlayer: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Harpy
   m_EditorClassIdentifier: 
   enemyName: Harpy
-  health: 10
+  health: 2
   attack: 2
   defense: 3
   speed: 3
