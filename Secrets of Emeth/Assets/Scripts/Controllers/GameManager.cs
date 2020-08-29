@@ -26,6 +26,10 @@ public class GameManager
     public delegate void GameStateChanged(Gamestates currentGameState, Gamestates newGameState);
     public static event GameStateChanged OnGameStateChanged;
 
+    public GameObject Player;
+
+    public RoomController currentRoom;
+
     void Start()
     {
         ChangeGameState(Gamestates.MAIN_MENU);

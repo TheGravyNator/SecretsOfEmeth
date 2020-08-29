@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,11 +7,12 @@ using UnityEngine.UI;
 
 public class BattleController : MonoBehaviour
 {
+    public GameObject playerPos;
     public GameObject player;
     public GameObject enemy;
 
-    private Character playerStats;
-    private Character enemyStats;
+    private CharacterController playerStats;
+    private EnemyController enemyStats;
 
     private int playerHealth;
     private int enemyHealth;
@@ -26,10 +28,22 @@ public class BattleController : MonoBehaviour
 
     public TurnOrder turn;
 
+    public RoomController room;
+
     void Start()
     {
-        playerStats = player.GetComponent<Character>();
-        enemyStats = enemy.GetComponent<Character>();
+        GameManager.Instance.ChangeGameState(Gamestates.IN_BATTLE);
+
+        player = GameManager.Instance.Player;
+
+        playerStats = player.GetComponent<CharacterController>();
+
+        enemyStats = new EnemyController();
+
+        room = GameManager.Instance.currentRoom;
+        
+        EnemyStats test = room.spawnPool[(int)UnityEngine.Random.Range(0, room.spawnPool.Length)].statFormat;
+        enemyStats.InitializeEnemy(test);
 
         playerHealth = playerStats.health;
         enemyHealth = enemyStats.health;
@@ -38,30 +52,42 @@ public class BattleController : MonoBehaviour
 
         turn = TurnOrder.PLAYER;
 
-        textbox.WriteText(playerStats.characterName + " encounted a " + enemyStats.characterName + "!");
+        textbox.WriteText(playerStats.characterName + " encounted a " + enemyStats.enemyName + "!");
+
+        Debug.Log(GameManager.Instance.GameState);
     }
 
     void Update()
     {
         if (playerHealth <= 0)
         {
+            textbox.WriteText($"{enemyStats.enemyName} defeated {playerStats.characterName}.");
             SceneManager.LoadScene("Overworld");
         }
         if (enemyHealth <= 0)
         {
+            textbox.WriteText($"{playerStats.characterName} defeated {enemyStats.enemyName}.");
             SceneManager.LoadScene("Overworld");
         }
     }
 
     void PlayerAction(int action)
     {
+        StartCoroutine(BattleStep(action));
+    }
+
+    IEnumerator BattleStep(int action)
+    {
         if (turn == TurnOrder.PLAYER)
         {
+            int damage;
             if ((CharacterAction)action == CharacterAction.ATTACK)
             {
-                int damage = enemyStats.Attack(playerStats.attack);
+                damage = playerStats.Attack(enemyStats.defense);
                 enemyHealth -= damage;
-                Debug.Log("Player did " + damage + " damage.");
+                textbox.WriteText($"{playerStats.characterName} did {damage} damage.");
+                DisableButtons();
+                yield return new WaitUntil(() => textbox.typing == false);
                 UpdateHealthbar();
             }
             else if ((CharacterAction)action == CharacterAction.ITEM)
@@ -70,21 +96,21 @@ public class BattleController : MonoBehaviour
             }
             else if ((CharacterAction)action == CharacterAction.RUN)
             {
+                textbox.WriteText($"You ran away.");
                 SceneManager.LoadScene("Overworld");
             }
             turn = TurnOrder.ENEMY;
             DisableButtons();
-            EnemyAction();
-        }
-    }
 
-    void EnemyAction()
-    {
-        int damage = playerStats.Attack(enemyStats.attack);
-        playerHealth -= damage;
-        UpdateHealthbar();
-        turn = TurnOrder.PLAYER;
-        EnableButtons();
+            damage = enemyStats.Attack(playerStats.defense);
+            playerHealth -= damage;
+            textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.");
+            DisableButtons();
+            yield return new WaitUntil(() => textbox.typing == false);
+            UpdateHealthbar();
+            turn = TurnOrder.PLAYER;
+            EnableButtons();
+        }
     }
 
     void UpdateHealthbar()

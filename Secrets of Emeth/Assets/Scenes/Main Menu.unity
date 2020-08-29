@@ -215,6 +215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f6a40a14f5e64c4c93c139060da396b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 7777234613835772208, guid: 430e7e019e686404ba4374e561791d1e, type: 3}
+  room: {fileID: 6627306665590586880, guid: 72e6bbe75d000e74da67f7f02c00943f, type: 3}
 --- !u!4 &1097892835
 Transform:
   m_ObjectHideFlags: 0

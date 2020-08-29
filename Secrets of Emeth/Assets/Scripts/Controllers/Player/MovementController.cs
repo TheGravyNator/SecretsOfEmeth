@@ -13,8 +13,10 @@ public class MovementController : MonoBehaviour
     public float raycastlength;
 
     public Vector3 dir;
+
+    public RoomController room;
     
-    private bool isInteracting = false;
+    private bool cantMove = false;
 
     private void Start()
     {
@@ -35,27 +37,31 @@ public class MovementController : MonoBehaviour
         RaycastHit2D hitleft = Physics2D.Raycast(transform.position, Vector2.left, raycastlength);
 
         // Check is the space the player's moving to is not occupied. If the button is pressed and the grid space is available, add the appropriate direction to the pos variable.
-        if (!isInteracting)
+        if (!cantMove)
         {
             if (Input.GetAxisRaw("Vertical") == 1)
             {
                 dir = Vector3.up;
                 if (hitup.collider == null && tr.position == pos) pos += Vector3.up;
+                room.RandomEncounter();
             }
             if (Input.GetAxisRaw("Vertical") == -1)
             {
                 dir = Vector3.down;
                 if (hitdown.collider == null && tr.position == pos) pos += Vector3.down;
+                room.RandomEncounter();
             }
             if (Input.GetAxisRaw("Horizontal") == 1)
             {
                 dir = Vector3.right;
                 if (hitright.collider == null && tr.position == pos) pos += Vector3.right;
+                room.RandomEncounter();
             }
             if (Input.GetAxisRaw("Horizontal") == -1)
             {
                 dir = Vector3.left;
                 if (hitleft.collider == null && tr.position == pos) pos += Vector3.left;
+                room.RandomEncounter();
             }
         }
 
@@ -65,7 +71,7 @@ public class MovementController : MonoBehaviour
 
     private void GameStateChanged(Gamestates currentGameState, Gamestates newGameState)
     {
-        if (newGameState == Gamestates.INTERACTING) isInteracting = true;
-        if (currentGameState == Gamestates.INTERACTING) isInteracting = false;
+        if (newGameState == Gamestates.INTERACTING || newGameState == Gamestates.IN_BATTLE) cantMove = true;
+        if (currentGameState == Gamestates.INTERACTING) cantMove = false;
     }
 }
