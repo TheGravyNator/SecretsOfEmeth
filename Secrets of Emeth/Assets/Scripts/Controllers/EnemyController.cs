@@ -21,12 +21,12 @@ public class EnemyController : MonoBehaviour
         _statTemplate = statTemplate;
         enemyName = _statTemplate.enemyName;
         health = _statTemplate.health;
-        attack = _statTemplate.attack;
-        defense = _statTemplate.defense;
-        speed = _statTemplate.speed;
+        attack = _statTemplate.strength;
+        defense = _statTemplate.vitality;
+        speed = _statTemplate.dexterity;
     }
 
-    public int Attack(int enemyDefense)
+    public int MeleeAttack(int enemyDefense)
     {
         int damage = 0;
         if (attack < enemyDefense)

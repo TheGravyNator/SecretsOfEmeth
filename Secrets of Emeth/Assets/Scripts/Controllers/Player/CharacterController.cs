@@ -8,33 +8,28 @@ public class CharacterController : MonoBehaviour
     public string characterName;
 
     public int health;
-    public int attack;
-    public int defense;
+    public int strength;
+    public int vitality;
+    public int intelligence;
+    public int willpower;
     public int speed;
-
-    private void Start()
-    {
-        /*
-        if (isPlayer)
-            DontDestroyOnLoad(this);*/
-    }
-
-    public int Attack(int enemyDefense)
+    
+    public int MeleeAttack(int enemyDefense)
     {
         int damage = 0;
-        if (attack < enemyDefense)
+        if (strength < enemyDefense)
         {
-            damage = Convert.ToInt32(attack / 4);
+            damage = Convert.ToInt32(strength / 4);
             Debug.Log(characterName + "'s attack is lower.");
         }
-        else if (attack == enemyDefense)
+        else if (strength == enemyDefense)
         {
-            damage = Convert.ToInt32(attack / 2);
+            damage = Convert.ToInt32(strength / 2);
             Debug.Log(characterName + "'s attack is equal.");
         }
-        else if (attack > enemyDefense)
+        else if (strength > enemyDefense)
         {
-            damage = attack;
+            damage = strength;
             Debug.Log(characterName + "'s attack is higher.");
         }
         return damage;

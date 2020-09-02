@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6627306665590586883}
   - component: {fileID: 6627306665590586882}
-  - component: {fileID: 6627306665590586880}
   m_Layer: 0
   m_Name: map
   m_TagString: Untagged
@@ -81,19 +80,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6627306665590586880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6627306665590586885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 356146bd7b878c14598b52fe0eba141c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnChance: 0.003
-  spawnPool:
-  - statFormat: {fileID: 11400000, guid: d598a62d613cc244ba7cbf90e9a4bda0, type: 2}
-    spawnChance: 100
