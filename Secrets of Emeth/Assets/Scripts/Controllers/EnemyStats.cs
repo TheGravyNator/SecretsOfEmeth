@@ -11,9 +11,14 @@ public class EnemyStats : ScriptableObject
     [SerializeField]
     public int health;
     [SerializeField]
-    public int attack;
+    public int strength;
     [SerializeField]
-    public int defense;
+    public int vitality;
     [SerializeField]
-    public int speed;
+    public int dexterity;
+    [SerializeField]
+    public int intelligence;
+    [SerializeField]
+    public int willpower;
+
 }

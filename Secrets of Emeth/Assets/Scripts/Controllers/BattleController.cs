@@ -43,6 +43,8 @@ public class BattleController : MonoBehaviour
 
         room = GameManager.Instance.currentRoom;
 
+        Debug.Log(room.spawnPool.Length);
+
         EnemyStats test = room.spawnPool[(int)UnityEngine.Random.Range(0, room.spawnPool.Length)].statFormat;
         enemyStats.InitializeEnemy(test);
 
@@ -71,39 +73,89 @@ public class BattleController : MonoBehaviour
 
     IEnumerator BattleStep(int action)
     {
-        int playerRoll = Random.Range(0, 20) + playerStats.speed;
-        int enemyRoll = Random.Range(0, 20) + enemyStats.speed;
+        int playerInitiative = Random.Range(0, 20) + playerStats.speed;
+        int enemyInitiative = Random.Range(0, 20) + enemyStats.speed;
         int damage;
         if ((CharacterAction)action == CharacterAction.ATTACK)
         {
-            if (playerRoll > enemyRoll || playerRoll == enemyRoll)
+            if (playerInitiative > enemyInitiative || playerInitiative == enemyInitiative)
             {
-                damage = playerStats.Attack(enemyStats.defense);
-                enemyHealth -= damage;
-                textbox.WriteText($"{playerStats.characterName} did {damage} damage.", false); ;
-                DisableButtons();
-                yield return new WaitUntil(() => textbox.typing == false);
+                int playerRoll = Random.Range(0, 20) + playerStats.strength;
+                int enemyRoll = Random.Range(0, 20) + enemyStats.defense;
+
+                if (playerRoll > enemyRoll)
+                {
+                    damage = playerStats.MeleeAttack(enemyStats.defense);
+                    enemyHealth -= damage;
+                    textbox.WriteText($"{playerStats.characterName} did {damage} damage.", false); ;
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
+                else
+                {
+                    textbox.WriteText($"{playerStats.characterName} missed their attack.");
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
                 UpdateHealthbar();
-                damage = enemyStats.Attack(playerStats.defense);
-                playerHealth -= damage;
-                textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.", false);
-                DisableButtons();
-                yield return new WaitUntil(() => textbox.typing == false);
+
+                playerRoll = Random.Range(0, 20) + playerStats.strength;
+                enemyRoll = Random.Range(0, 20) + enemyStats.defense;
+
+                if (enemyRoll > playerRoll)
+                {
+                    damage = enemyStats.MeleeAttack(playerStats.vitality);
+                    playerHealth -= damage;
+                    textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.", false); ;
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
+                else
+                {
+                    textbox.WriteText($"{enemyStats.enemyName} missed their attack.");
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
                 UpdateHealthbar();
             }
-            if (playerRoll < enemyRoll)
+            if (playerInitiative < enemyInitiative)
             {
-                damage = enemyStats.Attack(playerStats.defense);
-                playerHealth -= damage;
-                textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.", false);
-                DisableButtons();
-                yield return new WaitUntil(() => textbox.typing == false);
+                int playerRoll = Random.Range(0, 20) + playerStats.strength;
+                int enemyRoll = Random.Range(0, 20) + enemyStats.defense;
+
+                if (enemyRoll > playerRoll)
+                {
+                    damage = enemyStats.MeleeAttack(playerStats.vitality);
+                    playerHealth -= damage;
+                    textbox.WriteText($"{enemyStats.enemyName} did {damage} damage.", false); ;
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
+                else
+                {
+                    textbox.WriteText($"{enemyStats.enemyName} missed their attack.");
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
                 UpdateHealthbar();
-                damage = playerStats.Attack(enemyStats.defense);
-                enemyHealth -= damage;
-                textbox.WriteText($"{playerStats.characterName} did {damage} damage.", false);
-                DisableButtons();
-                yield return new WaitUntil(() => textbox.typing == false);
+
+                playerRoll = Random.Range(0, 20) + playerStats.strength;
+                enemyRoll = Random.Range(0, 20) + enemyStats.defense;
+
+                if (playerRoll > enemyRoll)
+                {
+                    damage = playerStats.MeleeAttack(enemyStats.defense);
+                    enemyHealth -= damage;
+                    textbox.WriteText($"{playerStats.characterName} did {damage} damage.", false); ;
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
+                else
+                {
+                    textbox.WriteText($"{playerStats.characterName} missed their attack.");
+                    DisableButtons();
+                    yield return new WaitUntil(() => textbox.typing == false);
+                }
                 UpdateHealthbar();
             }
             if (playerHealth <= 0)

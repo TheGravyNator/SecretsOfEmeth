@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Harpy
   m_EditorClassIdentifier: 
   enemyName: Harpy
-  health: 2
-  attack: 2
-  defense: 3
-  speed: 3
+  health: 20
+  strength: 1
+  vitality: 2
+  dexterity: 3
+  intelligence: 1
+  willpower: 1
